@@ -12,20 +12,24 @@ class TreeNode {
         self.value = value
         self.parent = parent
     }
-        
-    func createTreeFrom(sortedArray array: [Int]) -> TreeNode {
-        if array.count == 0 {
-            return
-        }
-        
-        let midElement = array[array.count / 2]
-        let rootNode = TreeNode(value: midElement)
-        
-        rootNode.createTree(array: array, min: <#T##Int#>, max: <#T##Int#>)
-    }
     
-    func createTree(array: [Int], min: Int, max: Int) -> TreeNode? {
-        
+    func createTree(array: [Int], min: Int, max: Int) -> TreeNode? {        
+        if (min < max) {
+            let midIndex = (max - min) / 2
+            let midElement = array[midIndex]
+            print("min: \(min)--max: \(max)")
+            print("midEl: \(midElement)")
+            
+            let node = TreeNode(value: midElement, parent: self)
+            node.left = createTree(array: array, min: 0, max: midIndex-1)
+            node.right = createTree(array: array, min: midIndex+1, max: max)
+            
+            return node
+        }
+        else {
+            print("finished")
+            return nil
+        }
     }
     
     @discardableResult func insert(_ value: Int) -> TreeNode? {
@@ -53,3 +57,21 @@ class TreeNode {
         }
     }
 }
+
+let sortedArray = [1, 2, 3, 4, 5, 6, 7]
+
+func createTreeFrom(sortedArray array: [Int]) -> TreeNode? {
+    if array.count == 0 {
+        return nil
+    }
+    
+    let midIndex = array.count / 2
+    let midElement = array[midIndex]
+    let rootNode = TreeNode(value: midElement)
+    rootNode.left = rootNode.createTree(array: array, min: 0, max: midIndex-1)
+    rootNode.right = rootNode.createTree(array: array, min: midIndex+1, max: array.count - 1)
+    
+    return rootNode
+}
+
+createTreeFrom(sortedArray: sortedArray)
